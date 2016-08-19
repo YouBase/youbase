@@ -1,0 +1,51 @@
+{
+  "profileTypes": {
+    "health": {
+      "collections": [
+        {
+          "title": "Invoices",
+          "type": "invoice",
+          "schema": {
+            "type": "object",
+            "title": "Invoice",
+            "properties": {
+              "total": {
+                "title": "Total",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "total"
+            ]
+
+          }
+        },
+        {
+          "title": "Allergies",
+          "type": "allegy",
+          "schema": {
+            "type": "object",
+            "title": "Allergy",
+            "properties": {
+              "allergen": {
+                "title": "Allergen",
+                "type": "string"
+              }
+            },
+            "required": [
+              "allergen"
+            ]
+          },
+          "form": [
+            "allergen",
+            {
+              "type": "submit",
+              "style": "btn-info",
+              "title": "OK"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
