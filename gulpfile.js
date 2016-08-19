@@ -19,7 +19,7 @@ gulp.task('clean', function () {
 });
 
 gulp.task('coffee', function () {
-  gulp.src('./src/**/*.coffee')
+  return gulp.src('./src/**/*.coffee')
     .pipe(coffee({ bare: true }).on('error', gutil.log))
     .pipe(gulp.dest('./lib/'));
 });
@@ -37,7 +37,7 @@ gulp.task('build', ['coffee'], function() {
 });
 
 gulp.task('test', ['coffee'], function () {
-  gulp.src('./test/**/*.coffee', { read: false })
+  return gulp.src('./test/**/*.coffee', { read: false })
     .pipe(mocha({ reporter: 'spec' }))
     .on('error', gutil.log);
 });
