@@ -4,10 +4,12 @@ deferObject = require 'when/keys'
 
 class Definition
   constructor: (@custodian, definition) ->
+    throw Error('Custodian is required') unless @custodian?
     if !(@ instanceof Definition) then return new Definition(@custodian, definition)
-    if (definition instanceof Definition) then return definition
-    if (typeof definition is 'object') then @_definition = defer(definition)
-    if (typeof definition is 'string') then @_definition = @custodian.data.get(definition)
+    else if (definition instanceof Definition) then return definition
+    else if (typeof definition is 'object') then @_definition = defer(definition)
+    else if (typeof definition is 'string') then @_definition = @custodian.data.get(definition)
+    else throw Error('Invalid definition')
 
   child: (key) -> @children().then(children) -> Definition(@custodian, children[key])
 
@@ -16,16 +18,18 @@ class Definition
       deferObject.map (definition.children ? {}), (child) ->
         Definition(@custodian, child).save()
 
-  toObject: ->
-    @_toObject ?= @_definition.then (definition) =>
-      @children().then (children) =>
-        permissions: definition.permissions ? 'public'
-        meta: definition.meta ? {}
-        form: definition.form ? {}
-        schema: definition.schema ? {}
-        children: children
+  get: (key) ->
+    if key? then @get().then (definition) -> definition[key]
+    else
+      @_data ?= @_definition.then (definition) =>
+        @children().then (children) =>
+          permissions: definition.permissions ? 'public'
+          meta: definition.meta ? {}
+          form: definition.form ? {}
+          schema: definition.schema ? {}
+          children: children
 
-  save: -> @custodian.data.put(@toObject())
+  save: -> @custodian.data.put(@get())
 
 
 exports = module.exports = Definition

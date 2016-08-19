@@ -1,6 +1,8 @@
 Health =
   permissions: 'public'
-  meta: {}
+  meta:
+    name: 'name'
+    age: 'age'
   form: []
   schema: {}
   children:

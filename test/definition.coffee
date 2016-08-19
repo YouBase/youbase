@@ -28,9 +28,14 @@ describe 'Definition', ->
       result = definition.children()
       expect(result).to.be.an.object
 
-  describe 'toObject', ->
+  describe 'get', ->
     it 'should return an object', ->
       definition = @newDefinition(HealthProfile)
-      result = definition.toObject().then (value) ->
+      result = definition.get()
       expect(result).to.be.an.object
+
+    it 'should return the related section when passed a key', ->
+      definition = @newDefinition(HealthProfile)
+      result = definition.get('meta')
+      expect(result).to.eventually.deep.equal({name: "name", age: "age"})
 

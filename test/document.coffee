@@ -23,6 +23,8 @@ describe 'Document', ->
     @custodian = new Custodian()
     @newDocument = (key) -> Document(@custodian, key)
 
+    @definitionHash = '2Anmw2Nzc2wkkbM7JjnftbQaLKXdm2uMs1XXCbNkp1ERKEPT5p'
+
   describe 'extended', ->
     it 'should be extended if passed an extended public key', ->
       document = @newDocument(@publicExtendedKey)
@@ -62,21 +64,30 @@ describe 'Document', ->
     it 'should take a definition and return a hash', ->
       document = @newDocument(@privateExtendedKey)
       result = document.definition(HealthProfile)
-      expect(result).to.eventually.equal('2mfoSzTXWpS93Fyf9eWpJ2JMf9VtYmTjkZKe1wQL8UcDeS8Adz')
+      expect(result).to.eventually.equal(@definitionHash)
 
     it 'should return a Definition', ->
       document = @newDocument(@privateExtendedKey)
       result = document.definition(HealthProfile).then -> document.definition()
       expect(result).to.eventually.be.an.instanceOf(Definition)
 
+  describe 'meta', ->
+    it 'should extract metadata from data', ->
+      document = @newDocument(@privateExtendedKey)
+      result = document.definition(HealthProfile)
+        .then => document.data({name: 'hello', age: 25, gender: 'F'})
+        .then => document.meta()
+      expect(result).to.eventually.deep.equal({name: 'hello', age: 25})
+
   describe 'save', ->
     it 'should save _data to the custodian', ->
       document0 = @newDocument(@privateExtendedKey)
       document1 = @newDocument(@privateExtendedKey)
-      result = document0.data(hello: 'world').then ->
-        document0.save().then ->
-          document1.fetch().then (envelope) ->
-            document1.data()
+      result = document0.definition(HealthProfile).then ->
+        document0.data(hello: 'world').then ->
+          document0.save().then ->
+            document1.fetch().then (envelope) ->
+              document1.data()
 
       expect(result).to.eventually.deep.equal(hello: 'world')
 
