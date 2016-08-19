@@ -2,7 +2,7 @@ Custodian = require './custodian'
 Definition = require './definition'
 
 Wallet = require './wallet'
-Document = require './collection'
+Document = require './document'
 Collection = require './collection'
 
 class YouBase
