@@ -48,8 +48,8 @@ class Collection
     return false if @readonly
     document = @at()
     document.data(data)
-    document.definition(@definition(definition))
-    document.save() if autosave
+    .then => document.definition(@definition(definition))
+    .then -> document.save() if autosave
     @_documents[document.hdkey.index - @offset] = document
 
   sync: ->

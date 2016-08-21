@@ -20,6 +20,9 @@ describe 'Collection', ->
     @validPublicCollection = _.partial(@newCollection, @publicExtendedKey)
     @validPrivateCollection = _.partial(@newCollection, @privateExtendedKey)
 
+    @definition = Definition(@custodian, HealthProfile)
+    @definition.save().then (hash) => @definitionHash = hash
+
   describe 'extendedKey', ->
     it 'should not error on a valid publicExtendedKey', ->
       expect => @newCollection(@publicExtendedKey)
@@ -61,13 +64,13 @@ describe 'Collection', ->
     it 'should add a definition and return the hash', ->
       collection = @validPrivateCollection()
       result = collection.definition('health', HealthProfile)
-      expect(result).to.eventually.equal('2mfoSzTXWpS93Fyf9eWpJ2JMf9VtYmTjkZKe1wQL8UcDeS8Adz')
+      expect(result).to.eventually.equal(@definitionHash)
 
     it 'should add a definition', ->
       collection = @validPrivateCollection()
       result = collection.definition('health', HealthProfile)
       .then -> collection._definitions
-      expect(result).to.eventually.deep.equal(health: '2mfoSzTXWpS93Fyf9eWpJ2JMf9VtYmTjkZKe1wQL8UcDeS8Adz')
+      expect(result).to.eventually.deep.equal(health: @definitionHash)
 
     it 'should return all definitions when no arguments are passed', ->
       collection = @validPrivateCollection()
@@ -85,7 +88,7 @@ describe 'Collection', ->
   describe 'insert', ->
     it 'should return a promise', ->
       collection = @validPrivateCollection()
-      result = collection.insert(hello: 'world')
+      result = collection.insert(HealthProfile, name: 'Rupert')
       expect(result.hdkey).to.deep.equal(collection.at(0).hdkey)
 
     it 'should use a hardened offset if hardened', ->

@@ -1,10 +1,19 @@
 Health =
   permissions: 'public'
-  meta: {}
+  meta:
+    name: 'name'
+    age: 'age'
   form: []
-  schema: {}
+  schema:
+    title: "Health Profile"
+    type: "object"
+    properties:
+      name:
+        title: "Name"
+        type: "string"
+    required: [ "name" ]
   children:
     allergy: require './allergy'
-    # immunization: require './immunization'
+    immunization: require './immunization'
 
 exports = module.exports = Health

@@ -23,6 +23,9 @@ describe 'Document', ->
     @custodian = new Custodian()
     @newDocument = (key) -> Document(@custodian, key)
 
+    @definition = Definition(@custodian, HealthProfile)
+    @definition.save().then (hash) => @definitionHash = hash
+
   describe 'extended', ->
     it 'should be extended if passed an extended public key', ->
       document = @newDocument(@publicExtendedKey)
@@ -62,21 +65,39 @@ describe 'Document', ->
     it 'should take a definition and return a hash', ->
       document = @newDocument(@privateExtendedKey)
       result = document.definition(HealthProfile)
-      expect(result).to.eventually.equal('2mfoSzTXWpS93Fyf9eWpJ2JMf9VtYmTjkZKe1wQL8UcDeS8Adz')
+      expect(result).to.eventually.equal(@definitionHash)
 
     it 'should return a Definition', ->
       document = @newDocument(@privateExtendedKey)
       result = document.definition(HealthProfile).then -> document.definition()
       expect(result).to.eventually.be.an.instanceOf(Definition)
 
+  describe 'validate', ->
+    it 'should set errors attribute on invalid data', ->
+      document = @newDocument(@privateExtendedKey)
+      result = document.definition(HealthProfile)
+      .then -> document.data({})
+      .then -> document.validate()
+      .catch -> document.errors
+      expect(result).to.eventually.not.be.empty
+
+  describe 'meta', ->
+    it 'should extract metadata from data', ->
+      document = @newDocument(@privateExtendedKey)
+      result = document.definition(HealthProfile)
+        .then => document.data({name: 'hello', age: 25, gender: 'F'})
+        .then => document.meta()
+      expect(result).to.eventually.deep.equal({name: 'hello', age: 25})
+
   describe 'save', ->
     it 'should save _data to the custodian', ->
       document0 = @newDocument(@privateExtendedKey)
       document1 = @newDocument(@privateExtendedKey)
-      result = document0.data(hello: 'world').then ->
-        document0.save().then ->
-          document1.fetch().then (envelope) ->
-            document1.data()
+      result = document0.definition(HealthProfile).then ->
+        document0.data(name: 'Rupert').then ->
+          document0.save().then ->
+            document1.fetch().then (envelope) ->
+              document1.data()
 
-      expect(result).to.eventually.deep.equal(hello: 'world')
+      expect(result).to.eventually.deep.equal(name: 'Rupert')
 

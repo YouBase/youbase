@@ -1,5 +1,7 @@
+_ = require 'lodash'
 bs = require 'bs58check'
 ecc = require 'ecc-tools'
+tv4 = require 'tv4'
 defer = require 'when'
 
 HDKey = require 'hdkey'
@@ -50,7 +52,7 @@ class Document
     if definition?
       return defer(false) if @readonly
       Definition(@custodian, definition).save().then (hash) => @_links.definition = hash
-    else Definition(@custodian, @_links.definition)
+    else defer Definition(@custodian, @_links.definition)
 
   data: (data) ->
     if data?
@@ -59,17 +61,34 @@ class Document
     else @link('data')
 
   validate: ->
+    @definition()
+    .then (definition) -> definition.get('schema')
+    .then (schema) =>
+      @data().then (data) =>
+        validation = tv4.validateMultiple(data, schema, false, true)
+        @errors = validation.errors
+        if validation.valid then data
+        else defer.reject Error('Data does not match schema')
+
+  meta: ->
+    @definition()
+    .then (definition) -> definition.get('meta')
+    .then (meta) =>
+      @data().then (data) =>
+        @_meta = _.mapValues meta, (path) -> _.get(data, path)
 
   save: ->
     return defer(false) if @readonly
-    @_envelope = Envelope
-      send:
-        meta: @_meta
-        links: @_links
-        headers: @_headers
-      from: @privateKey
+    @validate().then => @meta()
+    .then (meta) =>
+      @_envelope = Envelope
+        send:
+          meta: @_meta
+          links: @_links
+          headers: @_headers
+        from: @privateKey
 
-    @custodian.index.put @_envelope.encode('base64')
+      @custodian.index.put @_envelope.encode('base64')
 
 exports = module.exports = Document
 
