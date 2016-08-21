@@ -20,7 +20,8 @@ describe 'Collection', ->
     @validPublicCollection = _.partial(@newCollection, @publicExtendedKey)
     @validPrivateCollection = _.partial(@newCollection, @privateExtendedKey)
 
-    @definitionHash = '2Anmw2Nzc2wkkbM7JjnftbQaLKXdm2uMs1XXCbNkp1ERKEPT5p'
+    @definition = Definition(@custodian, HealthProfile)
+    @definition.save().then (hash) => @definitionHash = hash
 
   describe 'extendedKey', ->
     it 'should not error on a valid publicExtendedKey', ->
@@ -87,7 +88,7 @@ describe 'Collection', ->
   describe 'insert', ->
     it 'should return a promise', ->
       collection = @validPrivateCollection()
-      result = collection.insert(HealthProfile, hello: 'world')
+      result = collection.insert(HealthProfile, name: 'Rupert')
       expect(result.hdkey).to.deep.equal(collection.at(0).hdkey)
 
     it 'should use a hardened offset if hardened', ->

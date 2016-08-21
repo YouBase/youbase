@@ -23,7 +23,8 @@ describe 'Document', ->
     @custodian = new Custodian()
     @newDocument = (key) -> Document(@custodian, key)
 
-    @definitionHash = '2Anmw2Nzc2wkkbM7JjnftbQaLKXdm2uMs1XXCbNkp1ERKEPT5p'
+    @definition = Definition(@custodian, HealthProfile)
+    @definition.save().then (hash) => @definitionHash = hash
 
   describe 'extended', ->
     it 'should be extended if passed an extended public key', ->
@@ -71,6 +72,15 @@ describe 'Document', ->
       result = document.definition(HealthProfile).then -> document.definition()
       expect(result).to.eventually.be.an.instanceOf(Definition)
 
+  describe 'validate', ->
+    it 'should set errors attribute on invalid data', ->
+      document = @newDocument(@privateExtendedKey)
+      result = document.definition(HealthProfile)
+      .then -> document.data({})
+      .then -> document.validate()
+      .catch -> document.errors
+      expect(result).to.eventually.not.be.empty
+
   describe 'meta', ->
     it 'should extract metadata from data', ->
       document = @newDocument(@privateExtendedKey)
@@ -84,10 +94,10 @@ describe 'Document', ->
       document0 = @newDocument(@privateExtendedKey)
       document1 = @newDocument(@privateExtendedKey)
       result = document0.definition(HealthProfile).then ->
-        document0.data(hello: 'world').then ->
+        document0.data(name: 'Rupert').then ->
           document0.save().then ->
             document1.fetch().then (envelope) ->
               document1.data()
 
-      expect(result).to.eventually.deep.equal(hello: 'world')
+      expect(result).to.eventually.deep.equal(name: 'Rupert')
 

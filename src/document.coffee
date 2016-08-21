@@ -1,7 +1,7 @@
 _ = require 'lodash'
 bs = require 'bs58check'
 ecc = require 'ecc-tools'
-ajv = require 'ajv'
+tv4 = require 'tv4'
 defer = require 'when'
 
 HDKey = require 'hdkey'
@@ -61,6 +61,14 @@ class Document
     else @link('data')
 
   validate: ->
+    @definition()
+    .then (definition) -> definition.get('schema')
+    .then (schema) =>
+      @data().then (data) =>
+        validation = tv4.validateMultiple(data, schema, false, true)
+        @errors = validation.errors
+        if validation.valid then data
+        else defer.reject Error('Data does not match schema')
 
   meta: ->
     @definition()
@@ -71,7 +79,8 @@ class Document
 
   save: ->
     return defer(false) if @readonly
-    @meta().then (meta) =>
+    @validate().then => @meta()
+    .then (meta) =>
       @_envelope = Envelope
         send:
           meta: @_meta
