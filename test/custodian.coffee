@@ -1,13 +1,13 @@
-Custodian = require '../lib/custodian'
-Envelope = require 'ecc-envelope'
-ecc = Envelope.et
+_ = require 'lodash'
+ecc = require 'ecc-tools'
 
 chaiAsPromised = require 'chai-as-promised'
 chai = require 'chai'
 chai.use chaiAsPromised
 expect = chai.expect
 
-_ = require 'lodash'
+Custodian = require '../lib/custodian'
+Envelope = require 'ecc-envelope'
 
 describe 'Custodian', ->
   before ->
@@ -22,17 +22,17 @@ describe 'Custodian', ->
       result = @custodian.data.get('aYSAd13fa7mzsguAoaXnecLfpTDKziwQ4BN2r3QLdi4QcLVZZ')
       expect(result).to.eventually.equal('bar')
 
-  describe 'data', ->
+  describe 'document', ->
     before ->
       @privateKey = ecc.privateKey()
       @publicKey = ecc.publicKey(@privateKey, true)
       @envelope = Envelope(send: {hello: 'world'}, from: @privateKey)
 
     it 'should allow me to put a value and get a the key', ->
-      result = @custodian.index.put(@envelope.encode())
+      result = @custodian.document.put(@envelope.encode())
       expect(result).to.eventually.deep.equal(@publicKey)
 
     it 'should allow me to get a value from the key', ->
-      result = @custodian.index.get(@publicKey)
+      result = @custodian.document.get(@publicKey)
       @envelope.encode('base64').then (envelope) ->
         expect(result).to.eventually.equal(envelope)
