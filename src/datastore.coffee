@@ -1,20 +1,24 @@
 _ = require 'lodash'
 ecc = require 'ecc-tools'
+bs = require 'bs58check'
 defer = require 'when'
+msgpack = require('msgpack5')()
 
 class Datastore
-  constructor: (@_db) ->
-    @_db ?=
-      documents: {}
-      get: (key) -> @documents[key]
-      put: (key, value) -> @documents[key] = value
+  constructor: (@_store) ->
+    if !(@ instanceof Datastore) then return new Datastore(@_store)
 
   put: (data) ->
     defer(data).then (data) =>
-      hash = ecc.bs58check.encode(ecc.checksum(data))
-      defer(@_db.put(hash, data))
-      .then ->hash
+      hash = ecc.checksum(data)
+      defer(@_store.put(hash, msgpack.encode(data)))
+      .then -> hash
 
-  get: (hash) -> defer(hash).then (hash) => @_db.get(hash)
+  get: (hash) ->
+    defer(hash)
+    .then (hash) =>
+      hash = bs.decode(hash) if (typeof hash is 'string')
+      @_store.get(hash)
+    .then (data) -> msgpack.decode(data)
 
 module.exports = Datastore

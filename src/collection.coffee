@@ -28,7 +28,7 @@ class Collection
   definition: (key, definition) ->
     if definition?
       Definition(@custodian, definition).save()
-      .then (hash) => @_definitions[key] = hash
+      .then (hash) => @_definitions[key] = bs.encode(hash)
     else if key?
       key = @_definitions[key] if (typeof key is 'string' and key.length <= 32)
       Definition(@custodian, key)
@@ -36,28 +36,32 @@ class Collection
       deferObject.map (@_definitions), (definition) =>
         Definition(@custodian, definition)
 
-  at: (index=@_documents.length+@offset) ->
-    document = @_documents[index-@offset]
-    return document if document?
-
-    key = @hdkey.deriveChild(index)
-    key = key.privateExtendedKey ? key.publicExtendedKey
-    new @model(@custodian, key)
-
   insert: (definition, data, autosave=true) ->
     return false if @readonly
     document = @at()
     document.data(data)
     .then => document.definition(@definition(definition))
     .then -> document.save() if autosave
-    @_documents[document.hdkey.index - @offset] = document
+    .then => @_documents[document.hdkey.index - @offset] = document
 
-  sync: ->
+  at: (index=@_documents.length+@offset) ->
+    document = @_documents[index-@offset]
+    return document if document?
+
+    hdkey = @hdkey.deriveChild(index)
+    key = hdkey.privateExtendedKey ? hdkey.publicExtendedKey
+    new @model(@custodian, key)
+
+  all: (refresh) -> @sync(refresh).then => @_documents
+
+  sync: (refresh=false) ->
+    start = @offset
+    start = start + @_documents.length if !refresh
     defer.iterate(
       (document) => @at(document.hdkey.index + 1)
-      (document) => document.fetch().then (data) -> !data
+      (document) => document.fetch().yield(false).else(true)
       (document) => @_documents[document.hdkey.index - @offset] = document
-      @at(@offset)
+      @at(start)
     )
 
 exports = module.exports = Collection

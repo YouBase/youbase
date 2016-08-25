@@ -1,24 +1,20 @@
-memdown = require 'memdown'
-
 chaiAsPromised = require 'chai-as-promised'
 chai = require 'chai'
 chai.use chaiAsPromised
-
 expect = chai.expect
-nock = require 'nock'
 
-defer = require 'when'
-multihashes = require 'multihashes'
+MemoryEngine = require '../lib/storage-engine/memory'
+Datastore = require '../lib/datastore'
 
-Datastore = require '../src/datastore'
+bs = require 'bs58check'
 
 describe 'Datastore', ->
   before ->
-    @datastore = new Datastore()
-    @data = {hello: 'world'}
-    @hash = '28274LepaARxynterwnve1jB4rARDUgvHCYgPa4BECydUYz8qr'
+    @storage = new MemoryEngine()
+    @datastore = new Datastore(@storage.data)
 
     @data = {hello: 'world'}
+    @hash = '28274LepaARxynterwnve1jB4rARDUgvHCYgPa4BECydUYz8qr'
 
   describe 'put', ->
     it 'should take an object and return a promise', ->
@@ -26,7 +22,7 @@ describe 'Datastore', ->
       expect(result).to.respondTo('then')
 
     it 'should resolve with a hash', ->
-      result = @datastore.put(@data).then (hash) -> hash.toString('hex')
+      result = @datastore.put(@data).then (hash) -> bs.encode(hash)
       expect(result).to.eventually.equal(@hash)
 
     it 'should store the json in the db', ->

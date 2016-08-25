@@ -1,15 +1,13 @@
 _ = require 'lodash'
+bs = require 'bs58check'
 ecc = require 'ecc-tools'
 defer = require 'when'
 
 Envelope = require 'ecc-envelope'
 
 class Documentstore
-  constructor: (@_db) ->
-    @_db ?=
-      documents: {}
-      get: (key) -> @documents[key]
-      put: (key, value) -> @documents[key] = value
+  constructor: (@_store) ->
+    if !(@ instanceof Documentstore) then return new Documentstore(@_store)
 
   put: (envelope) ->
     defer(envelope).then (envelope) =>
@@ -17,10 +15,16 @@ class Documentstore
       envelope.open().then (data) =>
         if data
           key = data.from
-          defer(@_db.put(ecc.bs58check.encode(key), envelope.encode('base64')))
+          envelope.encode().then (value) =>
+            @_store.put(key, value)
           .then -> key
         else false
 
-  get: (key) -> defer(key).then (key) => @_db.get(ecc.bs58check.encode(key))
+  get: (key) ->
+    defer(key)
+    .then (key) =>
+      key = bs.decode(key) if (typeof key is 'string')
+      @_store.get(key)
+    .then (data) -> Buffer.from(data)
 
 module.exports = Documentstore

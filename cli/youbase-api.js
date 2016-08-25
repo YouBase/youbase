@@ -1,6 +1,5 @@
 #! /usr/bin/env node
-require('dotenv').config();
-require('coffee-script/register');
+require('dotenv').config({silent: true});
 
 var _ = require('lodash');
 
@@ -9,7 +8,7 @@ var path = require('path');
 var cli = require('commander');
 var express = require('express');
 
-var api = require('../api/index.coffee');
+var api = require('../lib/api');
 
 cli
   .usage('[options]')

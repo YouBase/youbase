@@ -25,15 +25,21 @@ class Document
       @publicKey = key
     else if key.length == 32
       @privateKey = key
-      @publicKey = ecc.publicKey(@privateKey)
+      @publicKey = ecc.publicKey(@privateKey, true)
+
+    @pub = bs.encode(@publicKey) if @publicKey
+    @prv = bs.encode(@privateKey) if @privateKey
+    @xpub = @hdkey?.publicExtendedKey
+    @xprv = @hdkey?.privateExtendedKey
 
     @readonly = !@privateKey?
     @_headers =
       from: bs.encode(@publicKey)
     @_links = {}
+    @fetch()
 
   fetch: ->
-    @custodian.index.get(@publicKey).then (envelope) =>
+    @_fetch = @custodian.document.get(@publicKey).then (envelope) =>
       return false unless envelope
       envelope = Envelope(decode: envelope)
       envelope.open().then (envelope) =>
@@ -45,13 +51,18 @@ class Document
   link: (key, data) ->
     if data?
       @custodian.data.put(data)
-      .then (hash) => @_links[key] = hash
+      .then (hash) => @_links[key] = bs.encode(Buffer.from(hash))
     else @custodian.data.get(@_links[key])
 
   definition: (definition) ->
     if definition?
       return defer(false) if @readonly
-      Definition(@custodian, definition).save().then (hash) => @_links.definition = hash
+      definition = Definition(@custodian, definition)
+      definition.save().then (hash) =>
+        @_links.definition = bs.encode(Buffer.from(hash))
+      .then => definition.children()
+      .then (children) => @children._definitions = children
+      .then => @_links.definition
     else defer Definition(@custodian, @_links.definition)
 
   data: (data) ->
@@ -65,17 +76,18 @@ class Document
     .then (definition) -> definition.get('schema')
     .then (schema) =>
       @data().then (data) =>
+        defer.reject Error("No data") unless data?
         validation = tv4.validateMultiple(data, schema, false, true)
         @errors = validation.errors
         if validation.valid then data
-        else defer.reject Error('Data does not match schema')
+        else defer.reject Error("Data does not match schema: #{@errors} s#{JSON.stringify(schema)} d#{JSON.stringify(data)}")
 
   meta: ->
     @definition()
     .then (definition) -> definition.get('meta')
     .then (meta) =>
       @data().then (data) =>
-        @_meta = _.mapValues meta, (path) -> _.get(data, path)
+        @_meta = _(meta).mapValues((path) -> _.get(data, path)).omitBy(_.isUndefined).value()
 
   save: ->
     return defer(false) if @readonly
@@ -88,7 +100,7 @@ class Document
           headers: @_headers
         from: @privateKey
 
-      @custodian.index.put @_envelope.encode('base64')
+      @custodian.document.put @_envelope.encode()
 
 exports = module.exports = Document
 

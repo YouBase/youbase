@@ -1,13 +1,15 @@
-HDKey = require 'hdkey'
-Document = require '../lib/document'
-Custodian = require '../lib/memory-custodian'
-Definition = require '../lib/definition'
-HealthProfile = require './fixtures/health'
-
 chaiAsPromised = require 'chai-as-promised'
 chai = require 'chai'
 chai.use chaiAsPromised
 expect = chai.expect
+
+HDKey = require 'hdkey'
+Document = require '../lib/document'
+Custodian = require '../lib/custodian'
+Definition = require '../lib/definition'
+HealthProfile = require './fixtures/health'
+
+bs = require 'bs58check'
 
 describe 'Document', ->
   before ->
@@ -52,7 +54,9 @@ describe 'Document', ->
     it 'should save a link to custodian.data', ->
       document = @newDocument(@privateExtendedKey)
       result = document.link('body', {hello: 'world'}).then (hash) ->
+        console.log 'HASH >>>', hash
         document.custodian.data.get(hash)
+      .catch (err) -> console.log 'ERR >>>', err
       expect(result).to.eventually.deep.equal({hello: 'world'})
 
     it 'should return saved data', ->
@@ -65,7 +69,7 @@ describe 'Document', ->
     it 'should take a definition and return a hash', ->
       document = @newDocument(@privateExtendedKey)
       result = document.definition(HealthProfile)
-      expect(result).to.eventually.equal(@definitionHash)
+      expect(result).to.eventually.equal(bs.encode(@definitionHash))
 
     it 'should return a Definition', ->
       document = @newDocument(@privateExtendedKey)

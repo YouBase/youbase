@@ -6,12 +6,15 @@ chai = require 'chai'
 chai.use chaiAsPromised
 expect = chai.expect
 
-Documentstore = require '../src/documentstore'
+Documentstore = require '../lib/documentstore'
+MemoryStorage = require '../lib/storage-engine/memory'
+
 Envelope = require 'ecc-envelope'
 
 describe 'Documentstore', ->
   before ->
-    @documentstore = new Documentstore()
+    @storage = new MemoryStorage()
+    @documentstore = new Documentstore(@storage.document)
 
     @privateKey = ecc.privateKey()
     @publicKey = ecc.publicKey(@privateKey, true)
@@ -25,5 +28,6 @@ describe 'Documentstore', ->
   describe 'get', ->
     it 'should allow me to get an envelope from the key', ->
       result = @documentstore.get(@publicKey)
+      .then (key) -> key.toString('base64')
       @envelope.encode('base64').then (envelope) ->
         expect(result).to.eventually.equal(envelope)
