@@ -9,7 +9,7 @@ class MemoryStorageEngine
     get: (key) ->
       value = @documents[bs.encode(key)]
       if value? then defer(bs.decode(value))
-      else defer.reject Error('Record not found')
+      else defer.reject Error('Document not found')
     put: (key, value) -> @documents[bs.encode(key)] = bs.encode(value)
 
   data:
@@ -17,7 +17,7 @@ class MemoryStorageEngine
     get: (key) ->
       value = @data[bs.encode(key)]
       if value? then defer(bs.decode(value))
-      else defer.reject Error('Record not found')
+      else defer.reject Error('Data not found')
     put: (key, value) -> @data[bs.encode(key)] = bs.encode(value)
 
 exports = module.exports = MemoryStorageEngine

@@ -27,7 +27,6 @@ var config = {
   port: (process.env.YOUBASE_PORT || process.env.PORT)
 };
 
-
 fs.access(configPath, fs.F_OK, function(err) {
   if (!err) { _.defaults(config, require(configPath)); }
 

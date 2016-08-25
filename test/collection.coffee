@@ -90,7 +90,6 @@ describe 'Collection', ->
   describe 'insert', ->
     it 'should return a promise', ->
       collection = @validPrivateCollection()
-      console.log 'Collection', collection
       result = collection.insert(HealthProfile, name: 'Rupert')
       .then (profile) -> profile.hdkey
       expect(result).to.eventually.deep.equal(collection.at(0).hdkey)

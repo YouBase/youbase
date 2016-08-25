@@ -36,10 +36,11 @@ class Document
     @_headers =
       from: bs.encode(@publicKey)
     @_links = {}
-    @fetch()
+    @fetch().else(false)
 
   fetch: ->
-    @_fetch = @custodian.document.get(@publicKey).then (envelope) =>
+    @_fetch = @custodian.document.get(@publicKey)
+    .then (envelope) =>
       return false unless envelope
       envelope = Envelope(decode: envelope)
       envelope.open().then (envelope) =>
