@@ -6,10 +6,6 @@
 
   <title>YouBase (alpha)</title>
 
-  <!-- Youbase -->
-  <script src="/youbase.min.js"></script>
-  <script src="/main.js"></script>
-
   <!-- Flatdoc -->
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script src='https://cdn.rawgit.com/rstacruz/flatdoc/v0.9.0/legacy.js'></script>
@@ -26,7 +22,7 @@
   <!-- Initializer -->
   <script>
     Flatdoc.run({
-      fetcher: Flatdoc.file('docs.md')
+      fetcher: Flatdoc.github('YouBase/youbase', 'docs/docs.md')
     });
   </script>
 </head>
@@ -35,6 +31,7 @@
     <div class='left'>
       <h1>YouBase (alpha)</h1>
       <ul>
+        <li><a href='http://paper.youbase.io'>Read the Whitepaper</a></li>
         <li><a href='https://github.com/youbase/youbase'>View on GitHub</a></li>
         <li><a href='https://github.com/youbase/youbase/issues'>Issues</a></li>
       </ul>
