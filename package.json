@@ -10,7 +10,8 @@
   },
   "scripts": {
     "test": "gulp test",
-    "build": "gulp build"
+    "build": "gulp build",
+    "prepublish": "gulp build"
   },
   "dependencies": {
     "bigi": "~1.3.0",
