@@ -1,5 +1,5 @@
 Wallet = require '../lib/wallet'
-Custodian = require '../lib/memory-custodian'
+Custodian = require '../lib/custodian'
 Collection = require '../lib/collection'
 
 expect = require('chai').expect
@@ -9,10 +9,6 @@ describe 'Wallet', ->
   before ->
     @validMnemonic = 'travel awake spin pony decide disorder swallow wait napkin panther mad crash'
     @invalidMnemonic = 'invalid'
-
-    @profileData = {
-      type: 'health'
-    }
 
     @custodian = Custodian()
 

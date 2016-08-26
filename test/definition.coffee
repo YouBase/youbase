@@ -1,4 +1,4 @@
-Custodian = require '../lib/memory-custodian'
+Custodian = require '../lib/custodian'
 Definition = require '../lib/definition'
 HealthProfile = require './fixtures/health'
 

@@ -1,12 +1,14 @@
+expect = require('chai').expect
+
+Custodian = require '../lib/custodian'
 Collection = require '../lib/collection'
 Definition = require '../lib/definition'
-Custodian = require '../lib/memory-custodian'
 Document = require '../lib/document'
 
 HealthProfile = require './fixtures/health'
 
-expect = require('chai').expect
 _ = require('lodash')
+bs = require 'bs58check'
 
 describe 'Collection', ->
   before ->
@@ -21,7 +23,7 @@ describe 'Collection', ->
     @validPrivateCollection = _.partial(@newCollection, @privateExtendedKey)
 
     @definition = Definition(@custodian, HealthProfile)
-    @definition.save().then (hash) => @definitionHash = hash
+    @definition.save().then (hash) => @definitionHash = bs.encode(hash)
 
   describe 'extendedKey', ->
     it 'should not error on a valid publicExtendedKey', ->
@@ -89,16 +91,18 @@ describe 'Collection', ->
     it 'should return a promise', ->
       collection = @validPrivateCollection()
       result = collection.insert(HealthProfile, name: 'Rupert')
-      expect(result.hdkey).to.deep.equal(collection.at(0).hdkey)
+      .then (profile) -> profile.hdkey
+      expect(result).to.eventually.deep.equal(collection.at(0).hdkey)
 
     it 'should use a hardened offset if hardened', ->
       collection = @validPrivateCollection(true)
-      result = collection.insert(hello: 'world')
-      expect(result.hdkey.index).to.equal(2147483648)
+      result = collection.insert(HealthProfile, name: 'Rupert')
+      .then (profile) -> profile.hdkey.index
+      expect(result).to.eventually.equal(2147483648)
 
   describe 'sync', ->
     it 'should find each child that has data', ->
-      @custodian.index._index = {}
+      @custodian.document._store.documents = {}
       collection = Collection(@custodian, Document, @privateExtendedKey)
       result = collection.sync().then -> collection._documents
       expect(result).to.eventually.deep.equal([])

@@ -1,23 +1,21 @@
-Custodian = require './custodian'
-Definition = require './definition'
-
-Wallet = require './wallet'
-Document = require './document'
-Collection = require './collection'
-
 class YouBase
-  constructor: (@custodian='api.youbase.io') ->
+  constructor: (@custodian='http://api.youbase.io') ->
     if !(@ instanceof YouBase) then return new YouBase(@custodian)
 
-    @custodian = Custodian(@custodian) if (typeof @custodian is 'string')
+    @custodian = YouBase.Custodian(storage: 'rest', url: @custodian) if (typeof @custodian is 'string')
 
-  wallet: -> new Wallet(@custodian, arguments...)
+  wallet: -> new YouBase.Wallet(@custodian, arguments...)
+  document: -> new YouBase.Document(@custodian, arguments...)
+  definition: -> new YouBase.Definition(@custodian, arguments...)
+  collection: -> new YouBase.Collection(@custodian, YouBase.Document, arguments...)
 
-YouBase.Custodian = Custodian
-YouBase.Definition = Definition
+YouBase.Custodian = require './custodian'
+YouBase.Definition = require './definition'
 
-YouBase.Wallet = Wallet
-YouBase.Document = Document
-YouBase.Collection = Collection
+YouBase.Wallet = require './wallet'
+YouBase.Document = require './document'
+YouBase.Collection = require './collection'
+
+YouBase.Envelope = require 'ecc-envelope'
 
 exports = module.exports = YouBase

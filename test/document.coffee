@@ -1,13 +1,15 @@
-HDKey = require 'hdkey'
-Document = require '../lib/document'
-Custodian = require '../lib/memory-custodian'
-Definition = require '../lib/definition'
-HealthProfile = require './fixtures/health'
-
 chaiAsPromised = require 'chai-as-promised'
 chai = require 'chai'
 chai.use chaiAsPromised
 expect = chai.expect
+
+HDKey = require 'hdkey'
+Document = require '../lib/document'
+Custodian = require '../lib/custodian'
+Definition = require '../lib/definition'
+HealthProfile = require './fixtures/health'
+
+bs = require 'bs58check'
 
 describe 'Document', ->
   before ->
@@ -65,7 +67,7 @@ describe 'Document', ->
     it 'should take a definition and return a hash', ->
       document = @newDocument(@privateExtendedKey)
       result = document.definition(HealthProfile)
-      expect(result).to.eventually.equal(@definitionHash)
+      expect(result).to.eventually.equal(bs.encode(@definitionHash))
 
     it 'should return a Definition', ->
       document = @newDocument(@privateExtendedKey)

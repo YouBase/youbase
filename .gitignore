@@ -27,6 +27,7 @@ node_modules
 
 # Users Environment Variables
 .lock-wscript
+.node-version
 
 # Locally persisted data
 persist
