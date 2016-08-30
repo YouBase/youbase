@@ -15,5 +15,6 @@ Allergy =
         title: "Allergen"
         type: "string"
     required: [ "allergen" ]
+  children: {}
 
 exports = module.exports = Allergy

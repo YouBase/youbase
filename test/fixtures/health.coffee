@@ -1,5 +1,5 @@
 Health =
-  permissions: 'public'
+  permissions: 'private'
   meta:
     name: 'name'
     age: 'age'

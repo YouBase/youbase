@@ -3,6 +3,7 @@ bs = require 'bs58check'
 ecc = require 'ecc-tools'
 tv4 = require 'tv4'
 defer = require 'when'
+crypto = require 'crypto'
 
 HDKey = require 'hdkey'
 Envelope = require 'ecc-envelope'
@@ -66,11 +67,36 @@ class Document
       .then => @_links.definition
     else defer Definition(@custodian, @_links.definition)
 
-  data: (data) ->
+  data: (data, alg='aes') ->
     if data?
-      return false if @readonly
-      @link('data', data)
-    else @link('data')
+      defer(data).then (data) =>
+        return false if @readonly
+        @encrypt(data, alg)
+    else @decrypt()
+
+  encrypt: (data, alg='aes') ->
+    return defer(false) if @readonly
+    @definition()
+    .then (definition) -> definition.get('permissions')
+    .then (permissions) =>
+      if permissions == 'public' then @link('data', data)
+      else if permissions == 'hardened' or permissions == 'private'
+        return defer(false) if !@extended
+        iv = crypto.randomBytes(16)
+        key = ecc.sha256(@xpub) if permissions == 'hardened'
+        key = ecc.sha256(@prv) if permissions == 'private'
+        ecc.cipher(data, key, iv, 'aes').then (ciphertext) =>
+          @link('data', {iv: iv, alg: alg, ciphertext: ciphertext})
+
+  decrypt: (cipher) ->
+    @definition()
+    .then (definition) -> definition.get('permissions')
+    .then (permissions) =>
+      @link('data').then (cipher) =>
+        return cipher if permissions == 'public'
+        key = ecc.sha256(@xpub) if permissions == 'hardened'
+        key = ecc.sha256(@prv) if permissions == 'private'
+        ecc.decipher(cipher.ciphertext, key, cipher.iv, cipher.alg)
 
   validate: ->
     @definition()

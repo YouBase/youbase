@@ -39,8 +39,8 @@ class Collection
   insert: (definition, data, autosave=true) ->
     return false if @readonly
     document = @at()
-    document.data(data)
-    .then => document.definition(@definition(definition))
+    document.definition(@definition(definition))
+    .then => document.data(data)
     .then -> document.save() if autosave
     .then => @_documents[document.hdkey.index - @offset] = document
 
