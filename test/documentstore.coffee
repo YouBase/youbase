@@ -7,13 +7,13 @@ chai.use chaiAsPromised
 expect = chai.expect
 
 Documentstore = require '../lib/documentstore'
-MemoryStorage = require '../lib/storage-engine/memory'
+LevelupStorage = require '../lib/storage-engine/levelup'
 
 Envelope = require 'ecc-envelope'
 
 describe 'Documentstore', ->
   before ->
-    @storage = new MemoryStorage()
+    @storage = new LevelupStorage()
     @documentstore = new Documentstore(@storage.document)
 
     @privateKey = ecc.privateKey()
