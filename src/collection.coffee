@@ -52,7 +52,13 @@ class Collection
     key = hdkey.privateExtendedKey ? hdkey.publicExtendedKey
     new @model(@custodian, key)
 
-  all: (refresh) -> @sync(refresh).then => @_documents
+  all: (refresh, pluck) ->
+    if (typeof refresh is 'string')
+      pluck = refresh
+      refresh = false
+    @sync(refresh).then =>
+      if pluck then defer.map(@_documents, (d) -> d[pluck]?())
+      else @_documents
 
   sync: (refresh=false) ->
     start = @offset
