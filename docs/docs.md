@@ -232,20 +232,20 @@ wallet.profiles.definition('health', HealthProfile);
 With a definition in place we can now insert a document.
 
 ```javascript
-var healthProfile = wallet.profiles.insert('health', {heightt: 72, weight: 200});
+var healthProfile = wallet.profiles.insert('health', {height: 72, weight: 200});
 ```
 
 And get an array of all documents in a collection.
 
 ```javascript
-wallet.profiles.all().then(function (profiles) { console.log(profiles; )});
+wallet.profiles.all().then(function (profiles) { console.log(profiles); });
 ```
 
 Document
 --------
 
 Each document corresponds to a public key / private key pair in the wallet.
-Unsing a document instance you can get the documents meta information as well as
+Using a document instance you can get the documents meta information as well as
 pull the full document data..
 
 ``` javascript
