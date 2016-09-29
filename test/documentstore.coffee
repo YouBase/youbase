@@ -27,7 +27,8 @@ describe 'Documentstore', ->
 
   describe 'get', ->
     it 'should allow me to get an envelope from the key', ->
-      result = @documentstore.get(@publicKey)
+      result = @documentstore.put(@envelope.encode())
+      .then => @documentstore.get(@publicKey)
       .then (key) -> key.toString('base64')
       @envelope.encode('base64').then (envelope) ->
         expect(result).to.eventually.equal(envelope)

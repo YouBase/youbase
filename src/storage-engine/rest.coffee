@@ -7,15 +7,18 @@ request = require 'request'
 class RestClient
   constructor: (@url) ->
 
+  encoding: 'json'
+
   get: (key) ->
     defer.promise (resolve, reject) =>
-      request url.resolve(@url, bs.encode(key)), {encoding: null}, (err, res, body) =>
-        if (!err && res.statusCode == 200) then resolve(body)
+      request url.resolve(@url, bs.encode(key)), {}, (err, res, body) =>
+        if (!err && res.statusCode == 200) then resolve(JSON.parse(body))
         else reject(err)
 
   put: (key, value) ->
     defer.promise (resolve, reject) =>
-      request.post @url, {body: value, headers: {'content-type': 'application/octet-stream'}, encoding: null}, (err, res, body) ->
+      value = JSON.stringify(value) if (typeof value isnt 'string')
+      request.post @url, {body: value, headers: {'content-type': 'application/json'}}, (err, res, body) ->
         if (!err && res.statusCode == 201) then resolve(body)
         else reject(err)
 

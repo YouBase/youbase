@@ -7,7 +7,7 @@ Card = {
   },
   form: ['*'],
   schema: {
-    title: "Identity Profile",
+    title: "Card",
     type: "object",
     properties: {
       name: {
@@ -54,6 +54,7 @@ Identity = {
 youbase = YouBase(window.location.href);
 wallet = youbase.wallet(mnemonic);
 wallet.profiles.definition('identity', Identity).then(function () {
+  console.log('Defined identity', Identity);
   return wallet.profiles.insert('identity', {name: 'Josh'});
 }).then(function (profile) {
   window.profile = profile;

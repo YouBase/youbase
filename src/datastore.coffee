@@ -2,7 +2,6 @@ _ = require 'lodash'
 ecc = require 'ecc-tools'
 bs = require 'bs58check'
 defer = require 'when'
-msgpack = require('msgpack5')()
 
 class Datastore
   constructor: (@_store) ->
@@ -11,7 +10,7 @@ class Datastore
   put: (data) ->
     defer(data).then (data) =>
       hash = ecc.checksum(data)
-      defer(@_store.put(hash, msgpack.encode(data)))
+      defer(@_store.put(hash, data))
       .then -> hash
 
   get: (hash) ->
@@ -19,6 +18,6 @@ class Datastore
     .then (hash) =>
       hash = bs.decode(hash) if (typeof hash is 'string')
       @_store.get(hash)
-    .then (data) -> msgpack.decode(data)
+    .then (data) -> data
 
 module.exports = Datastore

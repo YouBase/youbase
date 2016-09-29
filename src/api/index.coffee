@@ -13,7 +13,6 @@ api = (app, config) ->
 
   app.use logger('dev')
   app.use bodyParser.json(type: 'application/json')
-  app.use bodyParser.raw(type: 'application/octet-stream')
 
   app.use (req, res, next) ->
     res.header("Access-Control-Allow-Origin", "*")
