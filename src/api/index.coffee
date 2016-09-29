@@ -7,7 +7,7 @@ bodyParser = require 'body-parser'
 Custodian = require '../custodian'
 
 api = (app, config) ->
-  custodian = Custodian(storage: 'memory')
+  custodian = Custodian(storage: 'levelup')
 
   routes = require('./routes')(custodian)
 

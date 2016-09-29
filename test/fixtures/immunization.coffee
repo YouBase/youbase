@@ -15,5 +15,6 @@ Immunization =
         title: "Immunization"
         type: "string"
     required: [ "immunization" ]
+  children: {}
 
 exports = module.exports = Immunization

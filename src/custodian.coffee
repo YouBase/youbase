@@ -2,6 +2,7 @@ Datastore = require './datastore'
 Documentstore = require './documentstore'
 
 StorageEngines =
+  levelup: require './storage-engine/levelup'
   memory: require './storage-engine/memory'
   rest: require './storage-engine/rest'
 
