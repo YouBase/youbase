@@ -53,7 +53,7 @@ class Document
   link: (key, data) ->
     if data?
       @custodian.data.put(data)
-      .then (hash) => @_links[key] = bs.encode(Buffer.from(hash))
+      .then (hash) => @_links[key] = bs.encode(new Buffer(hash))
     else @custodian.data.get(@_links[key])
 
   definition: (definition) ->
@@ -61,7 +61,7 @@ class Document
       return defer(false) if @readonly
       definition = Definition(@custodian, definition)
       definition.save().then (hash) =>
-        @_links.definition = bs.encode(Buffer.from(hash))
+        @_links.definition = bs.encode(new Buffer(hash))
       .then => definition.children()
       .then (children) => @children._definitions = children
       .then => @_links.definition
