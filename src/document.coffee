@@ -86,9 +86,11 @@ class Document
         key = ecc.sha256(@xpub) if permissions == 'hardened'
         key = ecc.sha256(@prv) if permissions == 'private'
         ecc.cipher(data, key, iv, 'aes').then (ciphertext) =>
+          iv = bs.encode(iv)
+          ciphertext = bs.encode(ciphertext)
           @link('data', {iv: iv, alg: alg, ciphertext: ciphertext})
 
-  decrypt: (cipher) ->
+  decrypt: ->
     @definition()
     .then (definition) -> definition.get('permissions')
     .then (permissions) =>
@@ -96,7 +98,9 @@ class Document
         return cipher if permissions == 'public'
         key = ecc.sha256(@xpub) if permissions == 'hardened'
         key = ecc.sha256(@prv) if permissions == 'private'
-        ecc.decipher(cipher.ciphertext, key, cipher.iv, cipher.alg)
+        ciphertext = bs.decode(cipher.ciphertext)
+        iv = bs.decode(cipher.iv)
+        ecc.decipher(ciphertext, key, iv, cipher.alg)
 
   validate: ->
     @definition()
