@@ -11,16 +11,22 @@ class RestClient
 
   get: (key) ->
     defer.promise (resolve, reject) =>
-      request url.resolve(@url, bs.encode(key)), {headers: {'content-type': 'application/json', 'auth': @auth}}, (err, res, body) =>
-        if (!err && res.statusCode == 200) then resolve(JSON.parse(body))
-        else reject(err)
+      try
+        request url.resolve(@url, bs.encode(key)), {headers: {'content-type': 'application/json', 'auth': @auth}}, (err, res, body) =>
+          if (!err && res.statusCode == 200) then resolve(JSON.parse(body))
+          else reject(err)
+      catch err
+        reject(err)
 
   put: (key, value) ->
     defer.promise (resolve, reject) =>
-      value = JSON.stringify(value) if (typeof value isnt 'string')
-      request.post @url, {body: value, headers: {'content-type': 'application/json', 'auth': @auth}}, (err, res, body) ->
-        if (!err && (res.statusCode == 201 || res.statusCode == 200)) then resolve(body)
-        else reject(err)
+      try
+        value = JSON.stringify(value) if (typeof value isnt 'string')
+        request.post @url, {body: value, headers: {'content-type': 'application/json', 'auth': @auth}}, (err, res, body) ->
+          if (!err && (res.statusCode == 201 || res.statusCode == 200)) then resolve(body)
+          else reject(err)
+      catch err
+        reject(err)
 
 class RestStorageEngine
   constructor: (@config) ->
