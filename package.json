@@ -1,6 +1,6 @@
 {
   "name": "youbase",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "An Individual-Centric Cryptographic Data Store",
   "author": "Josh Robinson",
   "license": "MIT",
@@ -24,7 +24,7 @@
     "commander": "^2.9.0",
     "crypto": "0.0.3",
     "dotenv": "^2.0.0",
-    "ecc-envelope": "^1.0.6",
+    "ecc-envelope": "^1.0.7",
     "ecc-tools": "^1.0.3",
     "ecdsa": "~0.5.3",
     "express": "^4.14.0",

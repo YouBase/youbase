@@ -10,6 +10,7 @@ class RestClient
   encoding: 'json'
 
   get: (key) ->
+    key = bs.decode(key) if (typeof key is 'string')
     defer.promise (resolve, reject) =>
       try
         request url.resolve(@url, bs.encode(key)), {headers: {'content-type': 'application/json', 'auth': @auth}}, (err, res, body) =>
