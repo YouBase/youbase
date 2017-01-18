@@ -120,6 +120,19 @@ class Document
       @data().then (data) =>
         @_meta = _(meta).mapValues((path) -> _.get(data, path)).omitBy(_.isUndefined).value()
 
+  summary: ->
+    @meta()
+    .then (meta) =>
+      meta: meta
+      document: @
+
+  details: ->
+    @_fetch
+    .then => @data()
+    .then (data) =>
+      data: data
+      document: @
+
   save: ->
     return defer(false) if @readonly
     @validate().then => @meta()
