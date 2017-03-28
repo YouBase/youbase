@@ -1,13 +1,13 @@
 mnemonic = 'match diamond magnet sing bullet enemy two twin gather shuffle prize jeans'
 
 Card = {
-  permissions: "public",
+  permissions: "hardened",
   meta: {
     name: "name"
   },
   form: ['*'],
   schema: {
-    title: "Identity Profile",
+    title: "Card",
     type: "object",
     properties: {
       name: {
@@ -52,14 +52,18 @@ Identity = {
 };
 
 youbase = YouBase(window.location.href);
+
 wallet = youbase.wallet(mnemonic);
 wallet.profiles.definition('identity', Identity).then(function () {
+  console.log('Defined identity', Identity);
   return wallet.profiles.insert('identity', {name: 'Josh'});
 }).then(function (profile) {
   window.profile = profile;
+  console.log('Profile Created', profile);
   return profile.children.insert('card', {name: 'Qdoba', category: 'loyalty'});
 }).then(function (card) {
   window.card = card;
+  console.log('Child Document Inserted', card);
 });
 
 
