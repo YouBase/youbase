@@ -8,10 +8,10 @@ sublevel = require 'level-sublevel'
 
 class LevelupStorageEngine
   constructor: (@config={}) ->
-    @config.db ?= memdown
+    # @config.db ?= memdown
     @config.valueEncoding = 'json'
-    @location = @config.location ? './youbase'
-    @db = sublevel(levelup(@config))
+    @location = @config.location ? './youbase.db'
+    @db = sublevel(levelup(@location, @config))
     @document = _.merge({}, deferNode.liftAll(@db.sublevel('documents')), {encoding: 'json'})
     @data = _.merge({}, deferNode.liftAll(@db.sublevel('data')), {encoding: 'json'})
 
