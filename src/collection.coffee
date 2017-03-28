@@ -38,11 +38,12 @@ class Collection
 
   insert: (definition, data, autosave=true) ->
     return false if @readonly
-    document = @at()
-    document.definition(@definition(definition))
-    .then => document.data(data)
-    .then -> document.save() if autosave
-    .then => @_documents[document.hdkey.index - @offset] = document
+    @sync().then =>
+      document = @at()
+      document.definition(@definition(definition))
+      .then => document.data(data)
+      .then -> document.save() if autosave
+      .then => @_documents[document.hdkey.index - @offset] = document
 
   at: (index=@_documents.length+@offset) ->
     document = @_documents[index-@offset]
@@ -57,6 +58,7 @@ class Collection
       pluck = refresh
       refresh = false
     @sync(refresh).then =>
+      console.log 'all', @_documents.length
       if pluck then defer.map(@_documents, (d) -> d[pluck]?())
       else @_documents
 
@@ -68,6 +70,6 @@ class Collection
       (document) => document.fetch().yield(false).else(true)
       (document) => @_documents[document.hdkey.index - @offset] = document
       @at(start)
-    )
+    ).then => @
 
 exports = module.exports = Collection
