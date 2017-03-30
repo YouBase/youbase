@@ -18,7 +18,7 @@ coverage
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
-lib/**
+/lib/
 
 # Dependency directory
 # Commenting this out is preferred by some people, see
@@ -32,3 +32,5 @@ node_modules
 # Locally persisted data
 persist
 .DS_Store
+/.youbasedb/
+
