@@ -1,18 +1,11 @@
 express = require 'express'
 
-path = require 'path'
-logger = require 'morgan'
-bodyParser = require 'body-parser'
-
-Custodian = require '../custodian'
-
 api = (app, config) ->
-  custodian = Custodian(storage: 'levelup')
 
-  routes = require('./routes')(custodian)
-
-  app.use logger('dev')
-  app.use bodyParser.json(type: 'application/json')
+  dbconfig = storage: 'levelup', dblocation: config.dblocation, cleardb: config.cleardb
+  routes = require('./routes')( require('../custodian')(dbconfig))
+  app.use require('morgan')('dev')
+  app.use require('body-parser').json(type: 'application/json')
 
   app.use (req, res, next) ->
     res.header("Access-Control-Allow-Origin", "*")

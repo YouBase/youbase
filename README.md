@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/YouBase/youbase.png?label=ready&title=Ready)](https://waffle.io/YouBase/youbase)
 YouBase
 =======
 

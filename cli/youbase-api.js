@@ -16,6 +16,8 @@ cli
   .option('-c, --config <path>', 'set config path. defaults to ./youbase.json', './youbase.json')
   .option('-h, --host [host]', 'api listens on [host]. defaults to localhost', 'localhost')
   .option('-p, --port [port]', 'api listens on [port]')
+  .option('-l, --dblocation <dblocation>', 'api stores data at <dblocation>')
+  .option('-X, --cleardb [cleardb]', 'api clears db on start', false)
   .parse(process.argv)
 
 if (cli.chdir) { process.chdir(cli.chdir); }
@@ -32,6 +34,8 @@ fs.access(configPath, fs.F_OK, function(err) {
 
   var port = cli.port || config.port || 9090
   var host = cli.host || config.host || 'localhost'
+  config.dblocation = cli.dblocation || config.dblocation
+  config.cleardb = cli.cleardb
 
   var app = express()
 
