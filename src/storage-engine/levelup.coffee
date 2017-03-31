@@ -1,17 +1,20 @@
 _ = require 'lodash'
-defer = require 'when'
 deferNode = require 'when/node'
-bs = require 'bs58check'
 levelup = require 'levelup'
 memdown = require 'memdown'
 sublevel = require 'level-sublevel'
 
 class LevelupStorageEngine
   constructor: (@config={}) ->
-    @config.db ?= memdown
     @config.valueEncoding = 'json'
-    @location = @config.location ? './youbase'
-    @db = sublevel(levelup(@config))
+    if !@config.dblocation
+    	@config.db = require 'memdown'
+    	console.log 'Data will not be persisted'
+    else if @config.cleardb
+      require('leveldown').destroy @config.dblocation, -> 
+        console.log 'data cleared: ' + @config.dblocation 
+    @location = @config.dblocation ? ''
+    @db = sublevel(levelup(@location, @config))
     @document = _.merge({}, deferNode.liftAll(@db.sublevel('documents')), {encoding: 'json'})
     @data = _.merge({}, deferNode.liftAll(@db.sublevel('data')), {encoding: 'json'})
 
