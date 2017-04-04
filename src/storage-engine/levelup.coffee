@@ -8,11 +8,11 @@ class LevelupStorageEngine
   constructor: (@config={}) ->
     @config.valueEncoding = 'json'
     if !@config.dblocation
-    	@config.db = require 'memdown'
-    	console.log 'Data will not be persisted'
+      @config.db = require 'memdown'
+      console.log 'Data will not be persisted'
     else if @config.cleardb
-      require('leveldown').destroy @config.dblocation, -> 
-        console.log 'data cleared: ' + @config.dblocation 
+      require('leveldown').destroy @config.dblocation, ->
+        console.log 'data cleared: ' + @config.dblocation
     @location = @config.dblocation ? ''
     @db = sublevel(levelup(@location, @config))
     @document = _.merge({}, deferNode.liftAll(@db.sublevel('documents')), {encoding: 'json'})
