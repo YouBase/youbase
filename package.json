@@ -5,6 +5,7 @@
   "author": "Josh Robinson",
   "license": "MIT",
   "main": "lib/index.js",
+  "types": "index.d.ts",
   "bin": {
     "youbase": "cli/index.js"
   },
