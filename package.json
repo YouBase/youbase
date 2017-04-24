@@ -7,7 +7,7 @@
   "main": "lib/index.js",
   "types": "index.d.ts",
   "bin": {
-    "youbase": "cli/index.js"
+    "youbase": "cli/youbase.js"
   },
   "scripts": {
     "test": "gulp test",

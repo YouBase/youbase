@@ -2,30 +2,34 @@
 // Project: YouBase
 // Definitions by: Justin Laue <https://github.com/fp-x>
 
-declare class Wallet {
-    coin: string;
+
+declare namespace YouBase {
+	export interface Wallet {
+		custodian: Custodian;
+		mnemonic: string;
+		coin: string;
+		config: Object;
+		seed: string;
+	}
+	export interface Document {
+	}
+	export interface Definition {
+	}
+	export interface Collection {
+	}
+	export interface Custodian {
+	}
 }
 
-declare class Document {
+declare class YouBase {
+	constructor(custodian?: string);
+
+	wallet: YouBase.Wallet;
+	document: YouBase.Document;
+	definition: YouBase.Definition;
+	collection: YouBase.Collection;
+	custodian: YouBase.Custodian;
 }
 
-declare class Definition {
-}
-
-declare class Collection {
-}
-
-declare class Custodian {
-}
-
-export class YouBase {
-    constructor(custodian?: string);
-
-    wallet: Wallet;
-    document: Document;
-    definition: Definition;
-    collection: Collection;
-    custodian: Custodian;
-}
-
-
+export = YouBase;
+export as namespace YouBase;
