@@ -4,7 +4,8 @@
 
 
 declare namespace YouBase {
-	export interface Wallet {
+	export class Wallet {
+		constructor(custodian?: string);
 		custodian: Custodian;
 		mnemonic: string;
 		coin: string;
