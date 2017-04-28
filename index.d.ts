@@ -5,18 +5,28 @@
 
 declare namespace YouBase {
 	export class Wallet {
-		constructor(custodian?: string);
+		constructor(custodian: Custodian, mnemonic?: string, config?: Object);
 		custodian: Custodian;
 		mnemonic: string;
 		coin: string;
 		config: Object;
 		seed: string;
+		rootkey: string;
+		hdkey: string;
+		privateExtendedKey: string;
+		profiles: Collection;
+		static generateMnemonic(): string;
 	}
+	export class Collection {
+		constructor(custodian: Custodian, model: string, key: string, hardened?: boolean)
+		definition(): number;
+		all(refresh, pluck?): any; // change to Promise?
+
+	}
+
 	export interface Document {
 	}
 	export interface Definition {
-	}
-	export interface Collection {
 	}
 	export interface Custodian {
 	}
