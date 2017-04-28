@@ -10,7 +10,7 @@ bip39 = require('bip39')
 coininfo = require('coininfo')
 
 class Wallet
-  constructor: (@custodian, @mnemonic=generateMnemonic(), @config={}) ->
+  constructor: (@custodian, @mnemonic=bip39.generateMnemonic(), @config={}) ->
     if !(@ instanceof Wallet) then return new Wallet(@custodian, @mnemonic, @config)
     throw Error('invalid Mnemonic') unless bip39.validateMnemonic(@mnemonic)
 
@@ -29,3 +29,6 @@ Wallet.generateMnemonic = () ->
     bip39.generateMnemonic()
 
 exports = module.exports = Wallet
+
+
+new Wallet();
