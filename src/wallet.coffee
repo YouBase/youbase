@@ -30,5 +30,3 @@ Wallet.generateMnemonic = () ->
 
 exports = module.exports = Wallet
 
-
-new Wallet();
