@@ -15,6 +15,7 @@ cli
   .option('-c, --config <path>', 'set config path. defaults to ./youbase.json', './youbase.json')
   .option('-h, --host [host]', 'api listens on [host]. defaults to localhost', 'localhost')
   .option('-p, --port [port]', 'api listens on [port]. defaults to 9090', 9090)
+  .option('-l, --dblocation <dblocation>', 'api stores data at <dblocation>')
   .parse(process.argv)
 
 if (cli.chdir) { process.chdir(cli.chdir); }
@@ -24,7 +25,8 @@ var configPath = path.join(process.cwd(), cli.config)
 var config = {
   host: cli.host,
   port: cli.port,
-  url: (cli.url || url.format({protocol: 'http', hostname: cli.host, port: cli.port}))
+  url: (cli.url || url.format({protocol: 'http', hostname: cli.host, port: cli.port})),
+  dblocation: cli.dblocation || '.youbasedb',
 }
 
 fs.writeFile(configPath, JSON.stringify(config, null, '  '), function(err) {
