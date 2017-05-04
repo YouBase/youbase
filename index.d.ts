@@ -21,11 +21,13 @@ declare namespace YouBase {
 		constructor(custodian: Custodian, model: string, key: string, hardened?: boolean)
 		definition(): number;
 		all(refresh, pluck?): any; // change to Promise?
-
+    insert(definition, data, autosave?): any;
 	}
+	export class Document {
+    constructor(custodian: Custodian, key: string)
+    details(): any;
+  }
 
-	export interface Document {
-	}
 	export interface Definition {
 	}
 	export interface Custodian {
