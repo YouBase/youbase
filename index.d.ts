@@ -21,7 +21,7 @@ declare namespace YouBase {
 		constructor(custodian: Custodian, model: string, key: string, hardened?: boolean)
 		definition(): number;
 		all(refresh, pluck?): any; // change to Promise?
-
+    insert(definition, data, autosave?): any;
 	}
 
 	export interface Document {
