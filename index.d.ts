@@ -19,18 +19,41 @@ declare namespace YouBase {
 	}
 	export class Collection {
 		constructor(custodian: Custodian, model: string, key: string, hardened?: boolean)
-		definition(): number;
-		all(refresh, pluck?): any; // change to Promise?
-    insert(definition, data, autosave?): any;
+		definition(): any; // Promise
+		insert(definition, data, autosave?): any; // Promise
+		all(refresh, pluck?): any; // Promise
+		at(index): Document;
+		sync(): any; // Promise
 	}
 	export class Document {
-    constructor(custodian: Custodian, key: string)
-    details(): any;
-  }
-
-	export interface Definition {
+		constructor(custodian: Custodian, key: string);
+		fetch(): any; // Promise
+		link(key, data): any; // Promise
+		definition(definition?: Definition): any; // Promise
+		validate(): any; // Promise
+		data(data, alg?: string): any; // Promise
+		encrypt(data, alg?: string): any; // Promise
+		decrypt(): any; // Promise
+		validate(): any; // Promise
+		meta(): any; // Promise
+		summary(): any; // Promise
+		details(): any;  // Promise
+		save(): any; // Promise
 	}
-	export interface Custodian {
+	export class Definition {
+		constructor(custodian: Custodian, definition: Definition);
+		child(key): any; // Promise
+		children(): any; // Promise
+		get(key): any; // Promise
+		bundle(definition: Definition): any; // Promise
+		schema(schema): any; // Promise
+	}
+	export class Custodian {
+		constructor(config?: Object);
+		config: Object;
+		store: any; // storageEngine
+		data: any; // Datastore
+		document: any; // Documentstore
 	}
 }
 
