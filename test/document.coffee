@@ -103,3 +103,15 @@ describe 'Document', ->
 
       expect(result).to.eventually.deep.equal(name: 'Rupert')
 
+  describe 'redact', ->
+    it 'should redact _data from the custodian', ->
+      document0 = @newDocument(@privateExtendedKey)
+      document1 = @newDocument(@privateExtendedKey)
+      result = document0.definition(HealthProfile).then ->
+        document0.data(name: 'Rupert').then ->
+          document0.save().then ->
+            document0.redact().then ->
+              document0.data()
+
+      expect(result).to.eventually.deep.equal({})
+
