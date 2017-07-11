@@ -43,7 +43,7 @@ Definition.bundle = (definition) ->
 Definition.schema = (schema) ->
   defer(schema).then (schema) ->
     jsonSchemaParser.resolve(schema).then (refs) ->
-      if refs.paths(['http', 'file']) then  jsonSchemaParser.bundle(schema)
+      if !!refs.paths(['http', 'file']).length then jsonSchemaParser.bundle(schema)
       else schema
 
 exports = module.exports = Definition
