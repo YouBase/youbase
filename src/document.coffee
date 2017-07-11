@@ -10,6 +10,15 @@ Envelope = require 'ecc-envelope'
 Collection = require './collection'
 Definition = require './definition'
 
+ScarDefinition =
+  permissions: 'public'
+  meta: {}
+  form: {}
+  schema:
+    title: 'Scar'
+    type: 'object'
+  children: {}
+
 class Document
   constructor: (@custodian, key) ->
     if !(@ instanceof Document) then return new Document(@custodian, key)
@@ -145,6 +154,12 @@ class Document
         from: @privateKey
 
       @custodian.document.put @_envelope.encode()
+
+  redact: ->
+    @children.all(true, 'redact')
+    .then => @definition(ScarDefinition)
+    .then => @data({})
+    .then => @save()
 
 exports = module.exports = Document
 
