@@ -117,7 +117,7 @@ class Document
     .then (schema) =>
       @data().then (data) =>
         defer.reject Error("No data") unless data?
-        validation = tv4.validateMultiple(data, schema, false)
+        validation = tv4.validateMultiple(data, schema, false, true)
         @errors = validation.errors
         if validation.valid then data
         else defer.reject Error("Data does not match schema: #{@errors}")
