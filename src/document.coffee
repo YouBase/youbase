@@ -68,13 +68,13 @@ class Document
   definition: (definition) ->
     if definition?
       return defer(false) if @readonly
-      definition = Definition(@custodian, definition)
-      definition.save().then (hash) =>
-        @_links.definition = bs.encode(new Buffer(hash))
+      (@_definition = defer Definition(@custodian, definition))
+      .then (definition) => definition.save()
+      .then (hash) => @_links.definition = bs.encode(new Buffer(hash))
       .then => definition.children()
       .then (children) => @children._definitions = children
       .then => @_links.definition
-    else defer Definition(@custodian, @_links.definition)
+    else @_definition ?= defer Definition(@custodian, @_links.definition)
 
   data: (data, alg='aes') ->
     if data?
@@ -117,10 +117,10 @@ class Document
     .then (schema) =>
       @data().then (data) =>
         defer.reject Error("No data") unless data?
-        validation = tv4.validateMultiple(data, schema, false, true)
+        validation = tv4.validateMultiple(data, schema, false)
         @errors = validation.errors
         if validation.valid then data
-        else defer.reject Error("Data does not match schema: #{@errors} s#{JSON.stringify(schema)} d#{JSON.stringify(data)}")
+        else defer.reject Error("Data does not match schema: #{@errors}")
 
   meta: ->
     @definition()
