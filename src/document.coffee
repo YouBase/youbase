@@ -70,8 +70,10 @@ class Document
       return defer(false) if @readonly
       (@_definition = defer Definition(@custodian, definition))
       .then (definition) => definition.save()
-      .then (hash) => @_links.definition = bs.encode(new Buffer(hash))
-      .then => definition.children()
+      .then (hash) =>
+        @_links.definition = bs.encode(new Buffer(hash))
+        @_definition
+      .then (definition) => definition.children()
       .then (children) => @children._definitions = children
       .then => @_links.definition
     else @_definition ?= defer Definition(@custodian, @_links.definition)
