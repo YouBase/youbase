@@ -30,6 +30,7 @@
     "ecdsa": "~0.5.3",
     "express": "^4.14.0",
     "hdkey": "~0.7.1",
+    "hdname": "^0.1.0",
     "json-schema-ref-parser": "^3.1.2",
     "level-sublevel": "^6.5.4",
     "leveldown": "^1.6.0",

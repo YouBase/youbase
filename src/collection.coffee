@@ -3,6 +3,7 @@ defer = require 'when'
 deferObject = require 'when/keys'
 
 HDKey = require 'hdkey'
+HDName = require 'hdname'
 Definition = require './definition'
 
 HARDENED_OFFSET = 0x80000000
@@ -46,12 +47,18 @@ class Collection
       .then => @_documents[document.hdkey.index - @offset] = document
 
   at: (index=@_documents.length+@offset) ->
-    document = @_documents[index-@offset]
-    return document if document?
+    if !Array.isArray(index)
+      document = @_documents[index-@offset]
+      return document if document?
 
-    hdkey = @hdkey.deriveChild(index)
+    index = HDName.encode(index) if (typeof index is 'string')
+    hdkey = @derive(index)
     key = hdkey.privateExtendedKey ? hdkey.publicExtendedKey
     new @model(@custodian, key)
+
+  derive: (index, key=@hdkey) ->
+    if Array.isArray(index) then index.reduce ((m, i) => @derive(i,m)), key
+    else key.deriveChild(index)
 
   all: (refresh, pluck) ->
     if (typeof refresh is 'string')

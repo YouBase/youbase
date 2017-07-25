@@ -30,7 +30,7 @@ class Document
       @hdkey = HDKey.fromExtendedKey(bs.encode(key))
       @privateKey = @hdkey.privateKey
       @publicKey = @hdkey.publicKey
-      @children = new Collection(@custodian, Document, @hdkey.privateExtendedKey ? @hdkey.publicExtendedKey)
+      @children = @child = new Collection(@custodian, Document, @hdkey.privateExtendedKey ? @hdkey.publicExtendedKey)
     else if key.length == 33
       @publicKey = key
     else if key.length == 32
@@ -49,6 +49,7 @@ class Document
     @fetch().else(false)
 
   fetch: ->
+    @_definition = undefined
     @_fetch = @custodian.document.get(@publicKey)
     .then (envelope) =>
       return false unless envelope
@@ -76,7 +77,7 @@ class Document
       .then (definition) => definition.children()
       .then (children) => @children._definitions = children
       .then => @_links.definition
-    else @_definition ?= defer Definition(@custodian, @_links.definition)
+    else @_definition ?= @_fetch.then => Definition(@custodian, @_links.definition)
 
   data: (data, alg='aes') ->
     if data?
