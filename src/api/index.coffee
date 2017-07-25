@@ -5,7 +5,16 @@ api = (app, config) ->
   dbconfig = storage: 'levelup', dblocation: config.dblocation, cleardb: config.cleardb
   routes = require('./routes')( require('../custodian')(dbconfig))
   app.use require('morgan')('dev')
-  app.use require('body-parser').json(type: 'application/json')
+
+  app.use (req, res, next) ->
+    data=''
+    req.setEncoding('utf8')
+    req.on 'data', (chunk) -> data += chunk
+    req.on 'end', ->
+      if req.headers['content-type'] == 'application/json' && !!(data?.length)
+        req.body = JSON.parse(data)
+      else req.body = data
+      next()
 
   app.use (req, res, next) ->
     res.header("Access-Control-Allow-Origin", "*")

@@ -34,16 +34,6 @@ class Definition
 
   save: -> @custodian.data.put(@get())
 
-Definition.bundle = (definition) ->
-  defer(definition).then (definition) ->
-    Definition.schema(definition.schema).then (schema) ->
-      definition.schema = schema
-      definition
-
-Definition.schema = (schema) ->
-  defer(schema).then (schema) ->
-    jsonSchemaParser.resolve(schema).then (refs) ->
-      if !!refs.paths(['http', 'file']).length then jsonSchemaParser.bundle(schema)
-      else schema
+Definition.bundle = (definition) -> defer(definition)
 
 exports = module.exports = Definition
