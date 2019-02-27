@@ -26,7 +26,7 @@ var config = {
   host: cli.host,
   port: cli.port,
   url: (cli.url || url.format({protocol: 'http', hostname: cli.host, port: cli.port})),
-  dblocation: cli.dblocation || '.youbasedb',
+  db: cli.dblocation || '.youbasedb',
 }
 
 fs.writeFile(configPath, JSON.stringify(config, null, '  '), function(err) {

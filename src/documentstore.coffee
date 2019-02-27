@@ -7,7 +7,6 @@ Envelope = require 'ecc-envelope'
 
 class Documentstore
   constructor: (@_store) ->
-    if !(@ instanceof Documentstore) then return new Documentstore(@_store)
 
   put: (envelope, encoding) ->
     defer(envelope).then (envelope) =>

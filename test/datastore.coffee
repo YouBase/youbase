@@ -3,8 +3,8 @@ chai = require 'chai'
 chai.use chaiAsPromised
 expect = chai.expect
 
-MemoryEngine = require '../lib/storage-engine/memory'
-Datastore = require '../lib/datastore'
+MemoryEngine = require '../src/storage-engine/memory'
+Datastore = require '../src/datastore'
 
 bs = require 'bs58check'
 

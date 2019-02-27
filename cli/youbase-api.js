@@ -34,7 +34,7 @@ fs.access(configPath, fs.F_OK, function(err) {
 
   var port = cli.port || config.port || 9090
   var host = cli.host || config.host || 'localhost'
-  config.dblocation = cli.dblocation || config.dblocation
+  config.db = cli.dblocation || config.db
   config.cleardb = cli.cleardb
 
   var app = express()

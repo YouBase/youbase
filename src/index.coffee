@@ -1,7 +1,5 @@
 class YouBase
   constructor: (@custodian='http://api.youbase.io', @apiKey) ->
-    if !(@ instanceof YouBase) then return new YouBase(@custodian, @apiKey)
-
     @custodian = new YouBase.Custodian(storage: 'rest', url: @custodian, api_key: @apiKey) if (typeof @custodian is 'string')
 
   wallet: -> new YouBase.Wallet(@custodian, arguments...)

@@ -1,9 +1,11 @@
 express = require 'express'
 
-api = (app, config) ->
+routes = require './routes'
+Custodian = require '../custodian'
 
+api = (app, config) ->
   dbconfig = storage: 'levelup', dblocation: config.dblocation, cleardb: config.cleardb
-  routes = require('./routes')( require('../custodian')(dbconfig))
+  routes = routes(new Custodian(dbconfig))
   app.use require('morgan')('dev')
 
   app.use (req, res, next) ->
@@ -25,6 +27,7 @@ api = (app, config) ->
   app.use '/', routes
   app.use express.static(__dirname + '/../../docs')
   app.use express.static(__dirname + '/../../dist')
+  app.use express.static(__dirname + '/../../public')
 
   # catch 404 and forward to error handler
   app.use (req, res, next) ->

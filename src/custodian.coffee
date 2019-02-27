@@ -1,17 +1,16 @@
+version = require('../package.json').version
+
 Datastore = require './datastore'
 Documentstore = require './documentstore'
 
 StorageEngines =
-  levelup: 
-    -> require './storage-engine/levelup'
-  memory: 
-    -> require './storage-engine/memory'
-  rest: 
-    -> require './storage-engine/rest'
+  levelup: -> require './storage-engine/levelup'
+  memory: -> require './storage-engine/memory'
+  rest: -> require './storage-engine/rest'
 
 class Custodian
   constructor: (@config={}) ->
-    if !(@ instanceof Custodian) then return new Custodian(@config)
+    @version = version
 
     storageEngine = @config?.storage ? 'memory'
     storageEngine = StorageEngines[storageEngine]() if (typeof storageEngine is 'string')
@@ -19,5 +18,6 @@ class Custodian
 
     @data = new Datastore(@store.data)
     @document = new Documentstore(@store.document)
+
 
 exports = module.exports = Custodian

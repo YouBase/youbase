@@ -6,8 +6,8 @@ chai = require 'chai'
 chai.use chaiAsPromised
 expect = chai.expect
 
-Documentstore = require '../lib/documentstore'
-LevelupStorage = require '../lib/storage-engine/levelup'
+Documentstore = require '../src/documentstore'
+LevelupStorage = require '../src/storage-engine/levelup'
 
 Envelope = require 'ecc-envelope'
 
