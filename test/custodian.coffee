@@ -3,7 +3,7 @@ chai = require 'chai'
 chai.use chaiAsPromised
 expect = chai.expect
 
-Custodian = require '../lib/custodian'
+Custodian = require '../src/custodian'
 Envelope = require 'ecc-envelope'
 
 _ = require 'lodash'
@@ -12,7 +12,7 @@ ecc = require 'ecc-tools'
 
 describe 'Custodian', ->
   before ->
-    @custodian = Custodian()
+    @custodian = new Custodian()
     @barHash = bs.decode('aYSAd13fa7mzsguAoaXnecLfpTDKziwQ4BN2r3QLdi4QcLVZZ')
 
   describe 'data', ->

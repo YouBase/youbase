@@ -69,7 +69,7 @@ class Document
   definition: (definition) ->
     if definition?
       return defer(false) if @readonly
-      (@_definition = defer Definition(@custodian, definition))
+      (@_definition = defer new Definition(@custodian, definition))
       .then (definition) => definition.save()
       .then (hash) =>
         @_links.definition = bs.encode(new Buffer(hash))
@@ -77,7 +77,7 @@ class Document
       .then (definition) => definition.children()
       .then (children) => @children._definitions = children
       .then => @_links.definition
-    else @_definition ?= @_fetch.then => Definition(@custodian, @_links.definition)
+    else @_definition ?= @_fetch.then => new Definition(@custodian, @_links.definition)
 
   data: (data, alg='aes') ->
     if data?

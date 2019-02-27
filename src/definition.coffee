@@ -16,9 +16,9 @@ class Definition
   child: (key) -> @children().then(children) -> Definition(@custodian, children[key])
 
   children: ->
-    @_children ?= @_definition.then (definition) ->
-      deferObject.map (definition?.children ? {}), (child) ->
-        Definition(@custodian, child).save()
+    @_children ?= @_definition.then (definition) =>
+      deferObject.map (definition?.children ? {}), (child) =>
+        new Definition(@custodian, child).save()
         .then (hash) -> bs.encode(hash)
 
   get: (key) ->

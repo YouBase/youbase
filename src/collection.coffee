@@ -28,14 +28,14 @@ class Collection
 
   definition: (key, definition) ->
     if definition?
-      Definition(@custodian, definition).save()
+      new Definition(@custodian, definition).save()
       .then (hash) => @_definitions[key] = bs.encode(hash)
     else if key?
       key = @_definitions[key] if (typeof key is 'string' and key.length <= 32)
-      Definition(@custodian, key)
+      new Definition(@custodian, key)
     else
       deferObject.map (@_definitions), (definition) =>
-        Definition(@custodian, definition)
+        new Definition(@custodian, definition)
 
   insert: (definition, data, autosave=true) ->
     return false if @readonly

@@ -24,7 +24,7 @@ describe 'Collection', ->
     @validPublicCollection = _.partial(@newCollection, @publicExtendedKey)
     @validPrivateCollection = _.partial(@newCollection, @privateExtendedKey)
 
-    @definition = Definition(@custodian, HealthProfile)
+    @definition = new Definition(@custodian, HealthProfile)
     @definition.save().then (hash) => @definitionHash = bs.encode(hash)
 
   describe 'extendedKey', ->
@@ -117,6 +117,6 @@ describe 'Collection', ->
   describe 'sync', ->
     it 'should find each child that has data', ->
       @custodian.document._store.documents = {}
-      collection = Collection(@custodian, Document, @privateExtendedKey)
+      collection = new Collection(@custodian, Document, @privateExtendedKey)
       result = collection.sync().then -> collection._documents
       expect(result).to.eventually.deep.equal([])

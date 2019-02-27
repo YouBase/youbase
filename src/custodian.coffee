@@ -17,7 +17,7 @@ class Custodian
     storageEngine = StorageEngines[storageEngine]() if (typeof storageEngine is 'string')
     @store = new storageEngine(@config)
 
-    @data = Datastore(@store.data)
-    @document = Documentstore(@store.document)
+    @data = new Datastore(@store.data)
+    @document = new Documentstore(@store.document)
 
 exports = module.exports = Custodian

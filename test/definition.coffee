@@ -1,5 +1,5 @@
-Custodian = require '../lib/custodian'
-Definition = require '../lib/definition'
+Custodian = require '../src/custodian'
+Definition = require '../src/definition'
 HealthProfile = require './fixtures/health'
 
 chaiAsPromised = require 'chai-as-promised'
@@ -10,7 +10,7 @@ expect = chai.expect
 describe 'Definition', ->
   before ->
     @custodian = new Custodian()
-    @newDefinition = (definition) -> Definition(@custodian, definition)
+    @newDefinition = (definition) -> new Definition(@custodian, definition)
 
   describe 'constructor', ->
     it 'should accept a Definition instance', ->

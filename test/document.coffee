@@ -4,9 +4,9 @@ chai.use chaiAsPromised
 expect = chai.expect
 
 HDKey = require 'hdkey'
-Document = require '../lib/document'
-Custodian = require '../lib/custodian'
-Definition = require '../lib/definition'
+Document = require '../src/document'
+Custodian = require '../src/custodian'
+Definition = require '../src/definition'
 HealthProfile = require './fixtures/health'
 
 bs = require 'bs58check'
@@ -23,9 +23,9 @@ describe 'Document', ->
     @invalidExtendedKey = 'invalid'
 
     @custodian = new Custodian()
-    @newDocument = (key) -> Document(@custodian, key)
+    @newDocument = (key) -> new Document(@custodian, key)
 
-    @definition = Definition(@custodian, HealthProfile)
+    @definition = new Definition(@custodian, HealthProfile)
     @definition.save().then (hash) => @definitionHash = hash
 
   describe 'extended', ->

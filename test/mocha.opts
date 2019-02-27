@@ -1,2 +1,4 @@
---compilers coffee:coffee-script/register
+--require coffeescript/register
+--watch-extensions js,coffee
 --recursive
+./test/**/*.{js,coffee}
